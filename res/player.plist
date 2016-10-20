@@ -4,27 +4,44 @@
     <dict>
         <key>frames</key>
         <dict>
-            <key>player01</key>
+            <key>player_jumpattack_01</key>
             <dict>
                 <key>frame</key>
-                <string>{{0,0},{96,96}}</string>
+                <string>{{0,0},{67.7,45.2}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{67.7,45.2}}</string>
                 <key>sourceSize</key>
-                <string>{96,96}</string>
+                <string>{67.7,45.2}</string>
             </dict>
-            <key>player02</key>
+            <key>player_jumpattack_02</key>
             <dict>
                 <key>frame</key>
-                <string>{{96,0},{96,96}}</string>
+                <string>{{67.7,0},{135.4,45.2}}</string>
                 <key>offset</key>
                 <string>{0,0}</string>
                 <key>rotated</key>
                 <false/>
+                <key>sourceColorRect</key>
+                <string>{{135.4,0},{203.1,45.2}}</string>
                 <key>sourceSize</key>
-                <string>{96,96}</string>
+                <string>{67.7,45.2}</string>
+            </dict>
+            <key>player_jumpattack_03</key>
+            <dict>
+                <key>frame</key>
+                <string>{{203.1,0},{270.8,45.2}}</string>
+                <key>offset</key>
+                <string>{0,0}</string>
+                <key>rotated</key>
+                <false/>
+                <key>sourceColorRect</key>
+                <string>{{0,0},{67.7,45.2}}</string>
+                <key>sourceSize</key>
+                <string>{67.7,45.2}</string>
             </dict>
         </dict>
         <key>metadata</key>

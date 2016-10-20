@@ -1,270 +1,78 @@
-# 10_CharacterAnimation
+評価基準＞
 
-## 1.　schedule関数を利用しての歩行アニメーション
-```
-this.schedule(this.working,0.08);
+＜プレイヤー＞
+ 1. プレイヤーのIdleアニメーションの実装
 
-},
+● 2. プレイヤーのWalkアニメーションの実装
 
-working :function(event){
-  this.workingFlag = (this.workingFlag==true)?false:true;
+● 3. 左移動Aキー、右移動dキーでの移動ができる
 
-  if(this.workingFlag )   this.initWithFile(res.player01_png);
-  else   this.initWithFile(res.player02_png);
-}
-```
-## 2.　SpriteFrame　を利用しての歩行アニメーション
-```
-//スプライトフレームを格納する配列
-var animationframe = [];
-//スプライトフレームを作成
-var frame1 = new cc.SpriteFrame(res.player01_png, cc.rect(0, 0, 96, 96));
-var frame2 = new cc.SpriteFrame(res.player02_png, cc.rect(0, 0, 96, 96));
-//スプライトフレームを配列に登録
-animationframe.push(frame1);
-animationframe.push(frame2);
-//スプライトフレームの配列を連続再生するアニメーションの定義
-var animation = new cc.Animation(animationframe, 0.08);
-//永久ループのアクションを定義
-var action = new cc.RepeatForever(new cc.animate(animation));
-//実行
-this.runAction(action);
-```
+● 4. プレイヤーのAttackアニメーションの実装
 
-## 3.　テクスチャアトラスを利用した歩行アニメーション
-テクスチャアトラスとは? 複数の画像を1つの画像にまとめたものをアトラス画像といいます。そうすることで、画像ロード時に読み込むファイル数が減り、ロード時間が短くなります。
-```
-//スプライトフレームを格納する配列
-var texture = cc.textureCache.addImage(res.player_sheet);
-//スプライトフレームを作成
-var frame1 = new cc.SpriteFrame.createWithTexture(texture, cc.rect(0, 0, 96, 96));
-var frame2 = new cc.SpriteFrame.createWithTexture(texture, cc.rect(96, 0, 96, 96));
-//スプライトフレームを配列に登録
-var animationframe = [];
-animationframe.push(frame1);
-animationframe.push(frame2);
-//スプライトフレームの配列を連続再生するアニメーションの定義
-var animation = new cc.Animation(animationframe, 0.08);
-//永久ループのアクションを定義
-var action = new cc.RepeatForever(new cc.animate(animation));
-//実行
-this.runAction(action);
-```
-## 4.　plist（スプライトシート＋切り出し用のXML）を用いたアニメーション
+● 5. wキーで通常攻撃アニメーションが発動する
 
-直接画像ファイルから読み込む場合は画像ファイルのパスを引数で渡すだけなのですが、TxturePackerなど作成したスプライトシート(plist)を取り込む場合は手順が変わります。
-```
-// スプライトシートをスプライトフレームキャッシュに登録
-cc.spriteFrameCache.addSpriteFrames(res.player_plist, res.player_sheet);
+● 6. プレイヤーのJumpアニメーションの実装
 
-// スプライトフレームを取得 player01,player02はplistの中で定義されいいる
-var frame1 = cc.spriteFrameCache.getSpriteFrame("player01");
-var frame2 = cc.spriteFrameCache.getSpriteFrame("player02");
+● 7.スペースキーもしくは上矢印キーで発動  
 
-//スプライトフレームを配列に登録
-var animationframe = [];
-animationframe.push(frame1);
-animationframe.push(frame2);
-//スプライトフレームの配列を連続再生するアニメーションの定義
-var animation = new cc.Animation(animationframe, 0.08);
-//永久ループのアクションを定義
-var action = new cc.RepeatForever(new cc.animate(animation));
-//実行
-this.initWithFile(res.player_sheet);
-this.runAction(action);
-```
+● 8. プレイヤーのJumpAttack（ジャンプ中攻撃）アニメーションの実装
 
-## 5.　羽ばたきアニメーションをしながら、旋回飛行をするコウモリの実装
-新規ﾌｧｲﾙ（EnemyBat.js）を追加し、index.htmlに記述する
-```
-<script type="text/javascript" src="cocos2d-js-v3.11.js" charset="UTF-8"></script>
-<script type="text/javascript" src="src/resource.js" charset="UTF-8"></script>
-<script type="text/javascript" src="src/EnemyBat.js" charset="UTF-8"></script>
-<script type="text/javascript" src="src/app.js" charset="UTF-8"></script>
-```
-横2*縦2で構成されたスプライトシートからフレームを切り出して、アニメーションフレームに登録する処理
-```
-var animationframe = [];
-//スプライトフレームを格納する配列
-var texture = cc.textureCache.addImage(res.bat_frames);
-for (i = 0; i < 2; i++) {
-  for (j = 0; j < 2; j++) {
-    //スプライトフレームを作成
-    var frame = new cc.SpriteFrame.createWithTexture(texture, cc.rect(160 * j, 96 * i, 160, 96));
-    //スプライトフレームを配列に登録
-    animationframe.push(frame);
-  }
-}
-//スプライトフレームの配列を連続再生するアニメーションの定義
-var animation = new cc.Animation(animationframe, 0.08);
-//永久ループのアクションを定義
-var action = new cc.RepeatForever(new cc.animate(animation));
-```
+● 9.ジャンプ中にwキー押す  
 
-こうもりの八の字旋回運動の例、パラメータ設定を試行錯誤してください。
+10.プレイヤーのFallアニメーションの実装
 
-```
-this.scheduleUpdate();
+11.ゾンビの歩行アニメーションの実装　
+　　※画面の外からプレイヤーめがけて歩いてくる
 
-},
+12.緑スライムの歩行アニメーションの実装
+　　※すでに画面にいくつか配置されている。プレイヤーめがけて歩いてくる
 
-update: function(dt) {
-this.FrameCount++;
-//4フレームに1回　こうもりの移動計算する
-if (this.FrameCount % 4 == 0) {
-  //プレイヤーの位置をこうもりの位置の差を計算
-  var offset_x = player.getPosition().x - this.getPosition().x;
-  var offset_y = player.getPosition().y - this.getPosition().y;
-  //offset_x = offset_x*Math.sin(offset_x);
-  //蝙蝠のｘ移動速度をプレイヤとこうもりの間の距離の0.05倍にする
-  var velocity_x = lerp(this.velocity.x, offset_x, 0.005);
-  var velocity_y = this.velocity.y;
-  //フォバリング高度より上なら下降させる。　降下下限高度より下にいたら、上昇させる
-  if (this.getPosition().y > HoverHeight) velocity_y += -0.035;
-  if (this.getPosition().y < RiseHeight) velocity_y += 0.05;
-  //プレイヤーの位置よりできるだけ下にならないように
-  if (this.getPosition().y < player.y + 20) velocity_y += 0.05;
-  //8の字旋回軌道をsin計算で適当に補正
-  velocity_y += 0.075 * Math.sin(this.FrameCount * 0.015) * Math.sin(this.FrameCount * 0.04);
-  console.log(velocity_x, velocity_y);
+13.黄色、紫スライムの歩行アニメーションの実装
+　　※プレイヤーめがけて歩いてくる　か　プレイヤーのそばに空中から落ちてくる
 
-  this.velocity.x = velocity_x;
-  this.velocity.y = velocity_y;
+14.3種類の回転するコインをそれぞれ2個以上表示させる
 
-  //  console.log(MoveDirection, this.velocity.x, offset.x);
-  if (this.velocity.x <= 0)
-    this.setFlippedX(true);
-  if (this.velocity.x > 0)
-    this.setFlippedX(false);
+15.HP,必殺技、獲得したコイン数を表示するパネルを実装する
+　　ハートゲージ（黄色）　必殺技ゲージ（緑）　消化分（茶色）の実装を含む
 
-  this.setPosition(this.getPosition().x + this.velocity.x, this.getPosition().y + this.velocity.y);
-}
+16.背景、カーテン、背景のもや、地面の代わりの木　をすべてを実装する　1点
 
-}
-```
-線形補間の関数　よく使うので覚えておいてください。
+17.タイトルを表示させる、キラキラアニメーションを実装する
 
-```
-});
-//始点、終点、の間で 0～1.0の割合の位置を返す関数
-function lerp(fStart, fEnd, fPercent) {
-return fStart + ((fEnd - fStart) * fPercent);
-}
+18.タイトル画面で何かキーを押したら、ゲームシーンが開始する
 
-```
+19.コウモリを2匹実装する　画面の外からやってくる
 
+20.Kキーを押すと、必殺技「ビール」が発射される
+　　発射されたビールは、弧を描いて地面に落ちる、地面に落ちたら消える
 
-## 6.　シングルタッチによるプレイヤの左右移動、ジャンプの処理
+21.プレイヤーが歩いている、静止している状態でモンスターにぶつかると
+　透明度50％点滅が3秒表示される
 
-`playerLayer`に左ボタン、右ボタン、ジャンプボタンを実装する
-後で、リスナーの中でどのボタンが押されたかを判定するために、setTag（番号）を
-用いて、tag情報を設定する
-```
-//左ボタン
-leftBtn = cc.Sprite.create(res.leftbutton_png);
-this.addChild(leftBtn, 0);
-leftBtn.setPosition(60, 40);
-leftBtn.setOpacity(128);
-leftBtn.setTag(1);
-//右ボタン
-rightBtn = cc.Sprite.create(res.rightbutton_png);
-this.addChild(rightBtn, 0);
-rightBtn.setPosition(150, 40);
-rightBtn.setOpacity(128);
-rightBtn.setTag(2);
+22.プレイヤーが歩いている、静止している状態でモンスターにぶつかると
+　　1回あたりHPゲージ三分の1減る　3回ぶつかるとゲームオーバー！
 
-//ジャンプボタン
-jumpBtn = cc.Sprite.create(res.rightbutton_png);
-jumpBtn.setRotation(-90);
-this.addChild(jumpBtn, 0);
-jumpBtn.setPosition(winSize.width - 60, 40);
-jumpBtn.setOpacity(128);
-jumpBtn.setTag(3);
-```
-Playerのクラスに、移動スピードやジャンプ中を表すフラグを用意する
-```
-this.xSpeed = 0;
-this.ySpeed = 0;
-this.jumpFlag = false;
-```
-さらに、update関数が実行するように実装
-```
-      this.scheduleUpdate();
-   },
-```
-現在位置のxSpeed ,ySpeedで更新する
-```
-//移動のため
-update: function(dt) {
-   console.log(this.jumpFlag, this.ySpeed);
+23.緑スライムを切ると頻繁にコインが出現する
+　切ったら時々ハートが出現することがある
 
-   if (this.xSpeed > 0) { //スピードが正の値（右方向移動）
-      //　向きを判定させる
-      this.setFlippedX(false);
-   }
-   if (this.xSpeed < 0) { //スピードが負の値（左方向移動）
-      this.setFlippedX(true);
-   }
-   //プレイヤーを降下させる処理　ジャンプボタンが押されてないときで、プレイヤが空中にある場合
-   if (this.jumpFlag == false) {
-      if (this.getPosition().y < tileSize * 1.6) this.ySpeed = 0;
-      else this.ySpeed = this.ySpeed - 0.5;
+24.黄色スライムと赤色スライムは、切ったら時限爆弾。
+切ったら時々ハートが出現することがある
 
-   }
-   //位置を更新する
-   this.setPosition(this.getPosition().x + this.xSpeed, this.getPosition().y + this.ySpeed);
+25.必殺技ビールは周囲のモンスターをまとめて倒すことができる
 
-}
- ```
- //タッチリスナーの実装
-  ```
- var listener = cc.EventListener.create({
-    event: cc.EventListener.TOUCH_ONE_BY_ONE,
-    // swallowTouches: true,
+26.ゾンビは2回切らないと倒せないがビールなら一撃で倒せる
 
-    onTouchBegan: function(touch, event) {
-       var target = event.getCurrentTarget();
-       var location = target.convertToNodeSpace(touch.getLocation());
-       var spriteSize = target.getContentSize();
-       var spriteRect = cc.rect(0, 0, spriteSize.width, spriteSize.height);
+27.ハートを取るとHPゲージがMAX（復活）になる。
 
-       if (cc.rectContainsPoint(spriteRect, location)) {
-          console.log(target.getTag() + "Btnがタッチされました");
+28.プレイヤーが着地すると土埃エフェクトが表示される。
 
-          //タッチしたスプライトが左ボタンだったら
-          if (target.getTag()　 == 1) {
-             player.xSpeed = -2.5;
-             leftBtn.setOpacity(255);
-             rightBtn.setOpacity(128);
-          } else {
-             //タッチしたスプライトが右ボタンだったら
-             if (target.getTag()　 == 2) {
-                player.xSpeed = 2.5;
-                rightBtn.setOpacity(255);
-                leftBtn.setOpacity(128);
-             }
-          }
-          //タッチしたスプライトがジャンプボタンだったら
-          if (target.getTag()　 == 3) {
-            //ジャンプ中でなかったら上昇速度を設定
-            if (player.jumpFlag == false && player.ySpeed == 0) player.ySpeed = 9;
-             player.jumpFlag = true;//ジャンプ中を表すflagをon
-             jumpBtn.setOpacity(255);
-          }
-       }
-       return true;
-    },
-    //タッチを止めたときは、移動スピードを0にする
-    onTouchEnded: function(touch, event) {
-       player.jumpFlag = false;
-       player.xSpeed = 0;
-       leftBtn.setOpacity(128);
-       rightBtn.setOpacity(128);
-       jumpBtn.setOpacity(128);
-    }
+29.プレイヤーがモンスターをきると効果音がなる。
 
- })
-  ```
+30.バックグランドMusicが実装されている
+
+31.プレイヤーが死んだら、剣がぶっとびのアニメーションが表示される
+
+32.プレイヤーが画面の左端、右端付近に移動すると画面転換が起こる
 ###  7. 課題  アクションゲームシーンを作成せよ
 kadai_assetsを解凍し、アクションゲームのシーンを実装せよ。
 プレイヤ、各種モンスターの表示、UIを表示、ハート、コインを表示
