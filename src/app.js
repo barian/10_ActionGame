@@ -1,13 +1,13 @@
 var size;
 //1:地面　2:ブロック　3:プレイヤ　4:ゾンビ 5:こうもり
 var level = [
-   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-   [0, 0, 0, 0, 0, 0, 0, 5, 0, 0],
-   [0, 0, 0, 0, 0, 0, 0, 2, 2, 2],
-   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-   [0, 0, 0, 2, 2, 2, 0, 0, 0, 0],
-   [0, 0, 0, 0, 3, 0, 0, 0, 4, 0],
-   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+   [0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0],
+   [0,0,0,0, 0, 0, 0, 0, 0, 0, 5, 0, 0,0,0,0],
+   [0,0,0,0, 0, 0, 0, 0, 0, 0, 2, 2, 2,0,0,0],
+   [0,0,0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0],
+   [0,0,0,0, 0, 0, 2, 2, 2, 0, 0, 0, 0,0,0,0],
+   [0,0,0,0, 0, 0, 0, 3, 0, 0, 0, 4, 0,0,0,6],
+   [1,1,1,1, 1, 1, 1, 1, 1, 1, 1, 1, 1,1,1,1]
 ];
 var tileSize = 96;
 var playerPosition; //マップ内のプレイやの位置(ｘ、ｙ)を保持する
@@ -20,8 +20,9 @@ var jump;
 var jump_attack;
 var attack;
 var walk;
+var keyone = false;
 
-var gameScene = cc.Scene.extend({
+var GameScene = cc.Scene.extend({
    onEnter: function() {
       this._super();
 
@@ -50,7 +51,18 @@ var backgroundLayer = cc.Layer.extend({
       //console.log(winSize.width,winSize.height);
       backgroundSprite.setPosition(winSize.width / 2, winSize.height / 2);
       //背景画像を画面の大きさに合わせるためのScaling処理
-      backgroundSprite.setScale(winSize.width / size.width, winSize.height / size.height);
+      backgroundSprite.setScale(winSize.width / size.width/0.5, winSize.height / size.height);
+      //足場
+      var background_frontSprite = cc.Sprite.create(res.background_front_png);
+      this.addChild(background_frontSprite);
+      background_frontSprite.setPosition(winSize.width / 2, winSize.height/4.5);
+      background_frontSprite.setScale(winSize.width / size.width/0.5, winSize.height / size.height);
+      //ぶら下がり
+      var ui_panels = cc.Sprite.create(res.ui_panels_png);
+      this.addChild(ui_panels);
+      ui_panels.setPosition(winSize.width / 2, winSize.height/0.95);
+      ui_panels.setScale(winSize.width / size.width/1.2, winSize.height / size.height/1.5);
+
    }
 
 });
@@ -60,7 +72,7 @@ var levelLayer = cc.Layer.extend({
       this._super();
       var size = cc.director.getWinSize();
       for (i = 0; i < 7; i++) {　　　　　　
-         for (j = 0; j < 10; j++) {
+         for (j = 0; j < 16; j++) {
             switch (level[i][j]) {
                case 1:
                   var groundSprite = cc.Sprite.create(res.ground_png);
@@ -129,7 +141,7 @@ var Player = cc.Sprite.extend({
       this.ySpeed = 0;
       this.jumpFlag = false;
       for (i = 0; i < 7; i++) {　　　　　　
-         for (j = 0; j < 10; j++) {
+         for (j = 0; j < 16; j++) {
             if (level[i][j] == 3) {
                this.setPosition(tileSize / 2 + tileSize * j, 96 * (7 - i) - tileSize / 2);
                playerPosition = {
@@ -139,71 +151,20 @@ var Player = cc.Sprite.extend({
             }
          }
       }
-      //this.schedule(this.working,0.08);
-      /*
-        // 2.　SpriteFrame　を利用しての歩行アニメーション
-          //スプライトフレームを格納する配列
-          var animationframe = [];
-          //スプライトフレームを作成
-          var frame1 = new cc.SpriteFrame(res.player01_png, cc.rect(0, 0, 96, 96));
-          var frame2 = new cc.SpriteFrame(res.player02_png, cc.rect(0, 0, 96, 96));
-          //スプライトフレームを配列に登録
-          animationframe.push(frame1);
-          animationframe.push(frame2);
-          //スプライトフレームの配列を連続再生するアニメーションの定義
-          var animation = new cc.Animation(animationframe, 0.08);
-          //永久ループのアクションを定義
-          var action = new cc.RepeatForever(new cc.animate(animation));
-          //実行
-          this.runAction(action);
-      */
-      /*
-          //３．テクスチャーからスプライトフレームを切り出す方法
-              //スプライトフレームを格納する配列
-              var texture = cc.textureCache.addImage(res.player_sheet);
-              //スプライトフレームを作成
-              var frame1 = new cc.SpriteFrame.createWithTexture(texture, cc.rect(0, 0, 96, 96));
-              var frame2 = new cc.SpriteFrame.createWithTexture(texture, cc.rect(96, 0, 96, 96));
-              //スプライトフレームを配列に登録
-              var animationframe = [];
-              animationframe.push(frame1);
-              animationframe.push(frame2);
-              //スプライトフレームの配列を連続再生するアニメーションの定義
-              var animation = new cc.Animation(animationframe, 0.08);
-              //永久ループのアクションを定義
-              var action = new cc.RepeatForever(new cc.animate(animation));
-              //実行
-              this.runAction(action);
-      */
-/*
-      // スプライトシートをキャッシュに登録
-      cc.spriteFrameCache.addSpriteFrames(res.player_plist, res.player_png);
-
-      // スプライトフレームを取得 player01,player02はplistの中で定義されいいる
-      var frame1 = cc.spriteFrameCache.getSpriteFrame("player_jumpattack_01");
-      var frame2 = cc.spriteFrameCache.getSpriteFrame("player_jumpattack_02");
-
-      //スプライトフレームを配列に登録
       var animationframe = [];
-      animationframe.push(frame1);
-      animationframe.push(frame2);
-      //スプライトフレームの配列を連続再生するアニメーションの定義
-      var animation = new cc.Animation(animationframe, 0.08);
-      //永久ループのアクションを定義
-      var action = new cc.RepeatForever(new cc.animate(animation));
-      //実行
-      this.initWithFile(res.player_sheet);
-      this.runAction(action);
-*/
-      var animationframe = [];
+      var playerframe = [];
       //スプライトフレームを格納する配列
       var texture = cc.textureCache.addImage(res.player_png);
       for (i = 0; i < 4; i++) {
-        for (j = 0; j < 3; j++) {
+        for (j = 0; j < 4; j++) {
           //スプライトフレームを作成
           var frame = new cc.SpriteFrame.createWithTexture(texture, cc.rect(192 * j, 128 * i, 192, 128));
           //スプライトフレームを配列に登録
           animationframe.push(frame);
+          playerframe.push(frame);
+          if(i == 1 && j == 2 || i == 2 && j == 2){
+            j++;
+          }
         }
         //スプライトフレームの配列を連続再生するアニメーションの定義
         var animation = new cc.Animation(animationframe, 0.2);
@@ -219,10 +180,15 @@ var Player = cc.Sprite.extend({
         animationframe = animationframe.slice( 0,0 ) ;
       }
       //実行
-      this.runAction(walk);
-      this.runAction(jump);
+      cc.Follow(player);
       this.runAction(attack);
+      this.stopAction(attack);
+      this.runAction(jump);
+      this.stopAction(jump);
       this.runAction(jump_attack);
+      this.stopAction(jump_attack);
+      this.runAction(walk);
+
       this.scheduleUpdate();
    },
 
@@ -243,6 +209,7 @@ var Player = cc.Sprite.extend({
          if (this.getPosition().y < tileSize * 1.6) this.ySpeed = 0;
          else this.ySpeed = this.ySpeed - 0.5;
       }
+      
       //位置を更新する
       this.setPosition(this.getPosition().x + this.xSpeed, this.getPosition().y + this.ySpeed);
    }
@@ -283,7 +250,7 @@ var listener = cc.EventListener.create({
          }
          //タッチしたスプライトがジャンプボタンだったら
          if (target.getTag()　 == 3) {
-            if (player.jumpFlag == false && player.ySpeed == 0) player.ySpeed = 9;
+            if (player.jumpFlag == false && player.ySpeed == 0) player.ySpeed = 1;
             player.jumpFlag = true;
             jumpBtn.setOpacity(255);
             animestop();
@@ -310,6 +277,7 @@ var keylistener = cc.EventListener.create({
    // swallowTouches: true,
 
    onKeyPressed: function(keyCode, event) {
+     if(keyone == false){
      if(keyCode == 87){
        animestop();
        if(player.ySpeed != 0){
@@ -333,17 +301,42 @@ var keylistener = cc.EventListener.create({
          player.runAction(walk);
       }
       if (keyCode == 32 || keyCode == 38) { // スペースキーか上矢印キーでジャンプ
-         if (player.jumpFlag == false && player.ySpeed == 0) player.ySpeed = 9;
+         if (player.jumpFlag == false && player.ySpeed == 0 && keyone == false) player.ySpeed = 9;
+         else player.ySpeed = player.ySpeed-0.5;
          player.jumpFlag = true;
          jumpBtn.setOpacity(255);
          animestop();
          player.runAction(jump);
+       }
       }
+      if(keyone == true){
+      if (keyCode == 65) { // a-Keyで左に移動
+          player.xSpeed = -2.5;
+          leftBtn.setOpacity(255);
+          rightBtn.setOpacity(128);
+      }
+      if (keyCode == 68) { // d-Keyで左に移動
+          player.xSpeed = 2.5;
+          rightBtn.setOpacity(255);
+          leftBtn.setOpacity(128);
+        }
+        if (keyCode == 32 || keyCode == 38) { // スペースキーか上矢印キーでジャンプ
+           if (player.jumpFlag == false && player.ySpeed == 0 && keyone == true) player.ySpeed = 9;
+           else player.ySpeed = player.ySpeed-0.5;
+           player.jumpFlag = true;
+           jumpBtn.setOpacity(255);
+           animestop();
+           //player.playerframe[10]
+           player.runAction(jump);
+         }
+      }
+      keyone = true;
       return true;
    },
    onKeyReleased: function(keyCode, event) {
       player.jumpFlag = false;
       player.xSpeed = 0;
+      keyone = false;
       //player.ySpeed = 0;
       leftBtn.setOpacity(128);
       rightBtn.setOpacity(128);
